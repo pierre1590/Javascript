@@ -1,0 +1,106 @@
+<!DOCTYPE html>
+<html lang="en">
+    <head>
+        <meta charset="utf-8">
+        <meta name="viewport" content="width=device-width, initial-scale=1.0">
+        <meta http-equiv="X-UA-Compatible" content="ie=edge">
+        <link rel="stylesheet" href="public/css/style.css">
+        <link rel="stylesheet" href="https://unpkg.com/leaflet@1.7/dist/leaflet.css">
+        <script src="https://unpkg.com/leaflet@1.7/dist/leaflet.js"></script>
+        <script src="http://code.jquery.com/jquery-3.5.1.min.js"
+          integrity="sha256-9/aliU8dGd2tb6OSsuzixeV4y/faTqgFtohetphbbj0="
+          crossorigin="anonymous"></script>
+        <link rel="apple-touch-icon" sizes="57x57" href="public/favicons/apple-icon-57x57.png">
+        <link rel="apple-touch-icon" sizes="60x60" href="public/favicons/apple-icon-60x60.png">
+        <link rel="apple-touch-icon" sizes="72x72" href="public/favicons/apple-icon-72x72.png">
+        <link rel="apple-touch-icon" sizes="76x76" href="public/favicons/apple-icon-76x76.png">
+        <link rel="apple-touch-icon" sizes="114x114" href="public/favicons/apple-icon-114x114.png">
+        <link rel="apple-touch-icon" sizes="120x120" href="public/favicons/apple-icon-120x120.png">
+        <link rel="apple-touch-icon" sizes="144x144" href="public/favicons/apple-icon-144x144.png">
+        <link rel="apple-touch-icon" sizes="152x152" href="public/favicons/apple-icon-152x152.png">
+        <link rel="apple-touch-icon" sizes="180x180" href="public/favicons/apple-icon-180x180.png">
+        <link rel="icon" type="image/png" sizes="192x192"  href="public/favicons/android-icon-192x192.png">
+        <link rel="icon" type="image/png" sizes="32x32" href="public/favicons/favicon-32x32.png">
+        <link rel="icon" type="image/png" sizes="96x96" href="public/favicons/favicon-96x96.png">
+        <link rel="icon" type="image/png" sizes="16x16" href="public/favicons/favicon-16x16.png">
+        <link rel="manifest" href="public/favicons/manifest.json">
+        <meta name="msapplication-TileColor" content="#ffffff">
+        <meta name="msapplication-TileImage" content="public/favicons/ms-icon-144x144.png">
+        <meta name="theme-color" content="#ffffff">
+        <link href="https://fonts.googleapis.com/css2?family=Roboto+Mono:ital,wght@1,600&display=swap" rel="stylesheet">
+        <title>Weather app</title>
+    </head>
+    <body onload="Clock()">
+      <div class="weather">
+       <header>       
+        <div class='search'>
+          <button onclick="getLocation()" class="search_here">Here<img src="public/img/location.png"> </button>
+          <input type="text" name="city" id="city"  placeholder="Search city" autofocus >
+          <button type="button" onclick="addr_search();" id="btn_search">Search</button> 
+          <div id="results"></div>   
+        </div>
+       </header><br/>
+        <div class="place">
+          <p class='city'>-</p> 
+          <p class="date">-</p>
+          <p class='time' id='time'>-</p>
+        </div><br/>
+        
+          
+            <div class="celsiusToFar">
+              <p class="celsfar"><input type="checkbox" value="1" id="checkboxID"><label for="checkboxID"></label></p>
+            </div>
+          
+            <div class="currWeather">
+          
+                <div class="notification"></div>
+          
+                <h2 class="feel">
+                  <p>- °<span>C</span></p>  
+                </h2>
+             <div class="weather-icon">
+                <img src="public/icons/unknown.png">
+             </div>
+              <p class="descr">-</p><br/> 
+              <section class="columns">
+                  <div class="column">   
+                    <div class="sunrise">
+                      <img src="public/img/sole3.gif">
+                        <span> a.m.</span>
+                    </div>
+                    <div class="sunset">
+                        <img src="public/img/luna1.gif">
+                            <span> p.m.</span>
+                    </div>
+                    <div class="tempMax">Temp. Max:
+                        <span> °C</span>
+                    </div>
+                    <div class="tempMin">Temp. Min:
+                          <span> °C</span>
+                    </div>
+                    <div class="pressure">Pressure:
+                      <span>hPa</span>
+                    </div>
+                    <div class="humidity">Humidity:
+                        <span>%</span>
+                    </div>
+                    <div class="wind_speed">Wind speed:
+                      <span>m/s</span>
+                    </div>
+                    <div class="wind_deg">Wind direction:
+                          <span>°</span>
+                    </div>    
+                    </div>  
+                  <div class="column">
+                    <div class="air">  
+                        <p>Air quality:</p>
+                        
+                    </div>
+                  </div>
+               </section>  
+            <div id="map">
+            </div>
+            
+       <script src="public/js/app.js"></script>
+    </body>
+</html>
