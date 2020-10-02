@@ -1,5 +1,7 @@
 // REQUEST DOTENV
-require('dotenv').config();
+require('dotenv').config({
+    path: '/.env'
+});
 
 
 // SELECT ELEMENTS
