@@ -1,7 +1,7 @@
 {
   "name": "weather",
   "version": "1.0.0",
-  "description": "��C\u0000r\u0000e\u0000a\u0000t\u0000e\u0000 \u0000J\u0000a\u0000v\u0000a\u0000s\u0000c\u0000r\u0000i\u0000p\u0000t\u0000 \u0000p\u0000r\u0000o\u0000j\u0000e\u0000c\u0000t\u0000\r\u0000 \u0000",
+  "description": "weather app",
   "main": "index.html",
   "dependencies": {
     "dotenv-webpack": "^3.0.0"
