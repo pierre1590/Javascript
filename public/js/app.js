@@ -1,3 +1,7 @@
+// REQUEST DOTENV
+require('dotenv').config();
+
+
 // SELECT ELEMENTS
 const iconElement = document.querySelector(".weather-icon");
 const cityElement = document.querySelector(".city");
@@ -16,6 +20,8 @@ const cF = document.querySelector(".celsfar input");
 const sunRise = document.querySelector(".sunrise span ");
 const sunSet = document.querySelector(".sunset span");
 
+
+
 // App data
 const weather = {};
 
@@ -27,7 +33,7 @@ weather.temperature = {
 // APP CONSTS AND VARS
 const KELVIN = 273;
 // API KEY
-const key = 'process.env.API';
+const key = process.env.KEY_API;
 
 
 
