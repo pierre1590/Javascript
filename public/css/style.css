@@ -252,12 +252,13 @@ input[type=text]{
     padding: 10px;
   }
   div#search input {
-    width: 200px;
+    width: 100px;
   }
   div#results {
     font-style: sans-serif;
     color: black;
-    font-size: 75%;
+    font-size: 65%;
+    display: inline;
   }
   
 

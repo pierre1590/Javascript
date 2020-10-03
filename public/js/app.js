@@ -1,8 +1,3 @@
-// REQUEST DOTENV
-require('dotenv').config({
-    path: '/.env'
-});
-
 
 // SELECT ELEMENTS
 const iconElement = document.querySelector(".weather-icon");
@@ -14,15 +9,13 @@ const windSpeedElement = document.querySelector(".wind_speed span ");
 const windDegElement = document.querySelector(".wind_deg span");
 const descrElement = document.querySelector(".descr");
 const notificationElement = document.querySelector(".notification");
-const rainElement = document.querySelector(".rain span");
-const searchMe = document.querySelector(".search_me");
 const tempMax = document.querySelector(".tempMax span");
 const tempMin = document.querySelector(".tempMin span");
 const cF = document.querySelector(".celsfar input");
 const sunRise = document.querySelector(".sunrise span ");
 const sunSet = document.querySelector(".sunset span");
 
-
+require('dotenv').config();
 
 // App data
 const weather = {};
@@ -35,7 +28,7 @@ weather.temperature = {
 // APP CONSTS AND VARS
 const KELVIN = 273;
 // API KEY
-const key = process.env.KEY_API;
+const key = process.env.API_KEY;
 
 
 
