@@ -32,18 +32,19 @@
     </head>
     <body onload="Clock()">
       <div class="weather">
-       <header>       
+       <header>      
+        <p class='time'>It's <span></span></p> 
         <div class='search'>
           <button onclick="getLocation()" class="search_here">Here<img src="public/img/location.png"> </button>
-          <input type="text" name="city" id="city"  placeholder="Search city" autofocus >
-          <button type="button" onclick="addr_search();" id="btn_search">Search</button> 
+          <input type="text" name="city" id="city" value=""  placeholder="Search city" autofocus >
+          <button type="button"  id="btn_search">Search</button> 
           <div id="results"></div>   
         </div>
        </header><br/>
         <div class="place">
           <p class='city'>-</p> 
           <p class="date">-</p>
-          <p class='time' id='time'>-</p>
+          <p class="timeCity">-</p>
         </div><br/>
         
           

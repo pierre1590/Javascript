@@ -14,23 +14,22 @@ const tempMin = document.querySelector(".tempMin span");
 const cF = document.querySelector(".celsfar input");
 const sunRise = document.querySelector(".sunrise span ");
 const sunSet = document.querySelector(".sunset span");
+const timeCity = document.querySelector(".timeCity ")
 
-require('dotenv').config();
+
 
 // App data
 const weather = {};
 
 weather.temperature = {
     unit : "celsius"
-}
+};
 
 
 // APP CONSTS AND VARS
 const KELVIN = 273;
 // API KEY
 const key = process.env.API_KEY;
-
-
 
 // CHECK IF BROWSER SUPPORTS GEOLOCATION
 if('geolocation' in navigator){
@@ -85,6 +84,7 @@ function getWeather(latitude, longitude){
             weather.wind_deg = data.wind.deg;
             weather.sunrise = convertTime(data.sys.sunrise);
             weather.sunset = convertTime(data.sys.sunset);
+            weather.dt = convertTime(data.dt);
            
         })
         .then(function(){
@@ -97,13 +97,15 @@ function getWeather(latitude, longitude){
 
 
 
-    function convertTime(unixTime){
-        let dt = new Date(unixTime*1000);
+    function convertTime(unixtime){
+        let dt = new Date(unixtime*1000);
         let h =  dt.getHours();
         let m = "0" + dt.getMinutes();
         let t = h + ":" + m.substr(-2);
         return t;
+        
     }
+    
 
 
 // DISPLAY WEATHER TO UI
@@ -119,8 +121,10 @@ function displayWeather(){
     windDegElement.innerHTML = `${weather.wind_deg}<span>° ${nameWind()}</span>`;
     tempMax.innerHTML = `${weather.temp_max}<span>°C</span>`;
     tempMin.innerHTML = `${weather.temp_min}<span>°C</span>`;
-    sunRise.innerHTML = `${weather.sunrise}<span> a.m.</span>`;
-    sunSet.innerHTML = `${weather.sunset}<span> p.m.</span>`;
+    sunRise.innerHTML = `${weather.sunrise}<span> AM</span>`;
+    sunSet.innerHTML = `${weather.sunset}<span> PM</span>`;
+    timeCity.innerHTML = `${weather.dt}`;
+    
     
 }
 
@@ -175,12 +179,19 @@ date.textContent=today.toLocaleDateString('en-US',options);
 
 // SHOW TIME
    function Clock (){
-    let time = document.querySelector('.time');
+    let time = document.querySelector('.time span');
     let hour = new Date();
-    time.textContent =  getHour(hour)+':'+ getMinute(hour);
+    time.textContent =  getHour(hour)+':'+ getMinute(hour)+amPm(hour);
     setTimeout('Clock()',1000);
    }
   
+   function amPm(time){
+       if (time<12){
+           return " AM";
+       }else{
+           return " PM";
+       }
+   }
 
    function getHour(time) {
        let h = ("0" + time.getHours()).slice(-2);
@@ -224,8 +235,9 @@ date.textContent=today.toLocaleDateString('en-US',options);
         weather.humidity = data.main.humidity;
         weather.wind_speed = Math.floor(data.wind.speed*3.6);
         weather.wind_deg = data.wind.deg;
-        weather.sunrise = convertTime(data.sys.sunrise);
-        weather.sunset = convertTime(data.sys.sunset);
+        weather.sunrise = (data.sys.sunrise);
+        weather.sunset = (data.sys.sunset);
+        weather.dt = (data.dt);
     })
     .then(function(){
        
@@ -234,10 +246,7 @@ date.textContent=today.toLocaleDateString('en-US',options);
         
 
     })
-    
-
-
-    .catch(error => {
+       .catch(error => {
        let nameCity = ('Ops, the city has not been found. Try again');
        cityElement.style.color='red';
        cityElement.innerHTML = nameCity;
@@ -246,15 +255,19 @@ date.textContent=today.toLocaleDateString('en-US',options);
        descrElement.innerHTML =  `<span>-</span> `;
        pressureElement.innerHTML =  `<span>-</span> `;
        humidityElement.innerHTML =  `<span>-</span> `;
-       windSpeedElement.innerHTML =  `<span>-</span> `;
+       windSpeedElement.innerHTML =  `<span> Km/h</span> `;
        windDegElement.innerHTML =  `<span>-</span> `;
        tempMax.innerHTML = `°<span>C</span>`;
        tempMin.innerHTML = `°<span>C</span>`;
-       sunRise.innerHTML = `<span> a.m.</span>`;
-       sunSet.innerHTML = `<span> p.m.</span>`;
-      
+       sunRise.innerHTML = `<span>-</span>`;
+       sunSet.innerHTML = `<span>-</span>`;     
+       timeCity.innerHTML = `<p>-</p>`;
 })
 }
+
+
+
+
 
 function getLocation() {
     
@@ -465,9 +478,9 @@ function convertLongDecToDMS(myLng) {
   }
 
   function addr_search() {
-    var inp = document.getElementById("city").value;
+    var inp = document.getElementById("city");
   
-    $.getJSON('http://nominatim.openstreetmap.org/search?format=json&limit=5&q='+ inp, function(data) {
+    $.getJSON('http://nominatim.openstreetmap.org/search?format=json&limit=5&q='+ inp.value, function(data) {
   
         var items = [];
 
@@ -502,4 +515,3 @@ function convertLongDecToDMS(myLng) {
           map.setZoom(13);
         }
       }
-      
