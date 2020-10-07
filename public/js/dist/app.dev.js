@@ -24,7 +24,7 @@ weather.temperature = {
 
 var KELVIN = 273; // API KEY
 
-var key = process.env.API_KEY; // CHECK IF BROWSER SUPPORTS GEOLOCATION
+var key = '0fcc183ed08bd13e496e5445fc167de6'; // CHECK IF BROWSER SUPPORTS GEOLOCATION
 
 if ('geolocation' in navigator) {
   navigator.geolocation.getCurrentPosition(setPosition, showError);
@@ -97,7 +97,6 @@ function displayWeather() {
   tempMin.innerHTML = "".concat(weather.temp_min, "<span>\xB0C</span>");
   sunRise.innerHTML = "".concat(weather.sunrise, "<span> AM</span>");
   sunSet.innerHTML = "".concat(weather.sunset, "<span> PM</span>");
-  timeCity.innerHTML = "".concat(weather.dt);
 } // C to F conversion
 
 
@@ -192,9 +191,10 @@ btn_search.onclick = function () {
     weather.wind_deg = data.wind.deg;
     weather.sunrise = data.sys.sunrise;
     weather.sunset = data.sys.sunset;
-    weather.dt = data.dt;
+    weather.timezone = data.timezone;
   }).then(function () {
     displayWeather();
+    timezone = "".concat(weather.timezone);
   })["catch"](function (error) {
     var nameCity = 'Ops, the city has not been found. Try again';
     cityElement.style.color = 'red';
@@ -211,9 +211,17 @@ btn_search.onclick = function () {
     tempMin.innerHTML = "\xB0<span>C</span>";
     sunRise.innerHTML = "<span>-</span>";
     sunSet.innerHTML = "<span>-</span>";
-    timeCity.innerHTML = "<p>-</p>";
   });
 };
+
+function cityTime(timezone) {
+  var t = document.querySelector('.timeCity');
+  var timezoneOffset = timezone / 3600;
+  var d = new Date();
+  var hh = d.getHours();
+  var mm = d.getMinutes();
+  t.textContent = hh + ":" + mm;
+}
 
 function getLocation() {
   if (navigator.geolocation) {

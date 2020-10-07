@@ -29,7 +29,7 @@ weather.temperature = {
 // APP CONSTS AND VARS
 const KELVIN = 273;
 // API KEY
-const key = process.env.API_KEY;
+const key = '0fcc183ed08bd13e496e5445fc167de6';
 
 // CHECK IF BROWSER SUPPORTS GEOLOCATION
 if('geolocation' in navigator){
@@ -123,7 +123,7 @@ function displayWeather(){
     tempMin.innerHTML = `${weather.temp_min}<span>°C</span>`;
     sunRise.innerHTML = `${weather.sunrise}<span> AM</span>`;
     sunSet.innerHTML = `${weather.sunset}<span> PM</span>`;
-    timeCity.innerHTML = `${weather.dt}`;
+    
     
     
 }
@@ -237,12 +237,12 @@ date.textContent=today.toLocaleDateString('en-US',options);
         weather.wind_deg = data.wind.deg;
         weather.sunrise = (data.sys.sunrise);
         weather.sunset = (data.sys.sunset);
-        weather.dt = (data.dt);
+        weather.timezone = (data.timezone);
     })
     .then(function(){
        
         displayWeather();
-       
+       timezone = `${weather.timezone}`;
         
 
     })
@@ -261,11 +261,19 @@ date.textContent=today.toLocaleDateString('en-US',options);
        tempMin.innerHTML = `°<span>C</span>`;
        sunRise.innerHTML = `<span>-</span>`;
        sunSet.innerHTML = `<span>-</span>`;     
-       timeCity.innerHTML = `<p>-</p>`;
+      
 })
 }
 
+function cityTime(timezone){
+    let t = document.querySelector('.timeCity')
+    let timezoneOffset = (timezone)/3600;
+    let d = new Date();
+    let hh = d.getHours();
+    let mm = d.getMinutes(); 
+    t.textContent = hh + ":" + mm;
 
+}
 
 
 
