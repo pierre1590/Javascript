@@ -15,7 +15,7 @@ var tempMin = document.querySelector(".tempMin span");
 var cF = document.querySelector(".celsfar input");
 var sunRise = document.querySelector(".sunrise span ");
 var sunSet = document.querySelector(".sunset span");
-var timeCity = document.querySelector(".timeCity "); // App data
+var timeCity = document.querySelector(".timeCity"); // App data
 
 var weather = {};
 weather.temperature = {
@@ -65,21 +65,23 @@ function getWeather(latitude, longitude) {
     weather.humidity = data.main.humidity;
     weather.wind_speed = Math.floor(data.wind.speed * 3.6);
     weather.wind_deg = data.wind.deg;
-    weather.sunrise = convertTime(data.sys.sunrise);
-    weather.sunset = convertTime(data.sys.sunset);
-    weather.dt = convertTime(data.dt);
+    weather.sunrise = data.sys.sunrise;
+    weather.sunset = data.sys.sunset;
+    weather.timezone = data.timezone;
   }).then(function () {
+    var tz = weather.timezone / 3600;
+    var snrise = weather.sunrise;
+    var snset = weather.sunset;
+    var dt = moment().utc().add(tz, 'hours').format("dddd, MMMM Do YYYY");
+    var date = document.querySelector('.date');
+    var t = moment.utc().add(tz, 'hours').format('hh:mm A ' + tz + ' z');
+    sunSet.innerHTML = snset ? moment.unix(snset).format('hh:mm A') : 'Not Available';
+    sunRise.innerHTML = snrise ? moment.unix(snrise).format('hh:mm A') : 'Not Available';
+    timeCity.innerHTML = t;
+    date.textContent = dt;
     displayWeather();
     cb();
   });
-}
-
-function convertTime(unixtime) {
-  var dt = new Date(unixtime * 1000);
-  var h = dt.getHours();
-  var m = "0" + dt.getMinutes();
-  var t = h + ":" + m.substr(-2);
-  return t;
 } // DISPLAY WEATHER TO UI
 
 
@@ -95,8 +97,6 @@ function displayWeather() {
   windDegElement.innerHTML = "".concat(weather.wind_deg, "<span>\xB0 ").concat(nameWind(), "</span>");
   tempMax.innerHTML = "".concat(weather.temp_max, "<span>\xB0C</span>");
   tempMin.innerHTML = "".concat(weather.temp_min, "<span>\xB0C</span>");
-  sunRise.innerHTML = "".concat(weather.sunrise, "<span> AM</span>");
-  sunSet.innerHTML = "".concat(weather.sunset, "<span> PM</span>");
 } // C to F conversion
 
 
@@ -133,17 +133,7 @@ cF.addEventListener("click", function () {
     windSpeedElement.innerHTML = "".concat(weather.wind_speed, "<span> km/h</span>");
     weather.temperature.unit = "celsius";
   }
-}); // SHOW DATE 
-
-var date = document.querySelector('.date');
-var today = new Date();
-var options = {
-  year: 'numeric',
-  month: 'long',
-  day: 'numeric',
-  weekday: 'long'
-};
-date.textContent = today.toLocaleDateString('en-US', options); // SHOW TIME
+}); // SHOW TIME
 
 function Clock() {
   var time = document.querySelector('.time span');
@@ -153,7 +143,7 @@ function Clock() {
 }
 
 function amPm(time) {
-  if (time < 12) {
+  if (getHour(time) < 12) {
     return " AM";
   } else {
     return " PM";
@@ -189,12 +179,22 @@ btn_search.onclick = function () {
     weather.humidity = data.main.humidity;
     weather.wind_speed = Math.floor(data.wind.speed * 3.6);
     weather.wind_deg = data.wind.deg;
+    weather.timezone = data.timezone;
+    weather.dt = data.dt;
     weather.sunrise = data.sys.sunrise;
     weather.sunset = data.sys.sunset;
-    weather.timezone = data.timezone;
   }).then(function () {
+    var tz = weather.timezone / 3600;
+    var snrise = weather.sunrise;
+    var snset = weather.sunset;
+    var dt = moment().utc().add(tz, 'hours').format("dddd, MMMM Do YYYY");
+    var date = document.querySelector('.date');
+    var t = moment.utc().add(tz, 'hours').format('hh:mm A ' + tz + ' z');
+    sunSet.innerHTML = snset ? moment.unix(snset).utc().add(tz, 'hours').format('hh:mm A') : 'Not Available';
+    sunRise.innerHTML = snrise ? moment.unix(snrise).utc().add(tz, 'hours').format('hh:mm A') : 'Not Available';
+    timeCity.innerHTML = t;
+    date.textContent = dt;
     displayWeather();
-    timezone = "".concat(weather.timezone);
   })["catch"](function (error) {
     var nameCity = 'Ops, the city has not been found. Try again';
     cityElement.style.color = 'red';
@@ -211,17 +211,9 @@ btn_search.onclick = function () {
     tempMin.innerHTML = "\xB0<span>C</span>";
     sunRise.innerHTML = "<span>-</span>";
     sunSet.innerHTML = "<span>-</span>";
+    timeCity.innerHTML = "<p>-</p>";
   });
 };
-
-function cityTime(timezone) {
-  var t = document.querySelector('.timeCity');
-  var timezoneOffset = timezone / 3600;
-  var d = new Date();
-  var hh = d.getHours();
-  var mm = d.getMinutes();
-  t.textContent = hh + ":" + mm;
-}
 
 function getLocation() {
   if (navigator.geolocation) {
@@ -390,55 +382,4 @@ function convertLongDecToDMS(myLng) {
   var seconds = ((longAbs - degrees) * 60 - minutes) * 60;
   var cardinalDir = myLng >= 0 ? 'E' : 'W';
   return "".concat(degrees, "\xB0 ").concat(minutes, "' ").concat(seconds.toFixed(3), "\" ").concat(cardinalDir);
-}
-
-var map;
-
-function load_map() {
-  map = new L.Map('map', {
-    zoomControl: false
-  });
-  var osmUrl = 'http://{s}.tile.openstreetmap.org/{z}/{x}/{y}.png',
-      osmAttribution = 'Map data &copy; 2012 <a href="http://openstreetmap.org">OpenStreetMap</a> contributors',
-      osm = new L.TileLayer(osmUrl, {
-    maxZoom: 18,
-    attribution: osmAttribution
-  });
-  map.setView(new L.LatLng(0, 0), 12).addLayer(osm);
-}
-
-function addr_search() {
-  var inp = document.getElementById("city");
-  $.getJSON('http://nominatim.openstreetmap.org/search?format=json&limit=5&q=' + inp.value, function (data) {
-    var items = [];
-    $.each(data, function (key, val) {
-      items.push("<li><a href='#' onclick='chooseAddr(" + val.lat + ", " + val.lon + ");return false;'>" + val.display_name + '</a></li>');
-    });
-    $('#results').empty();
-
-    if (items.length != 0) {
-      $('<p>', {
-        html: "Search results:"
-      }).appendTo('#results');
-      $('<ul/>', {
-        'class': 'my-new-list',
-        html: items.join('')
-      }).appendTo('#results');
-    } else {
-      $('<p>', {
-        html: "No results found"
-      }).appendTo('#results');
-    }
-  });
-}
-
-function chooseAddr(lat, lng, type) {
-  var location = new L.LatLng(lat, lng);
-  map.panTo(location);
-
-  if (type == 'city' || type == 'administrative') {
-    map.setZoom(11);
-  } else {
-    map.setZoom(13);
-  }
 }

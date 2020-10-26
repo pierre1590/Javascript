@@ -14,7 +14,7 @@ const tempMin = document.querySelector(".tempMin span");
 const cF = document.querySelector(".celsfar input");
 const sunRise = document.querySelector(".sunrise span ");
 const sunSet = document.querySelector(".sunset span");
-const timeCity = document.querySelector(".timeCity ")
+const timeCity = document.querySelector(".timeCity");
 
 
 
@@ -82,29 +82,36 @@ function getWeather(latitude, longitude){
             weather.humidity = data.main.humidity;
             weather.wind_speed =Math.floor(data.wind.speed*3.6);
             weather.wind_deg = data.wind.deg;
-            weather.sunrise = convertTime(data.sys.sunrise);
-            weather.sunset = convertTime(data.sys.sunset);
-            weather.dt = convertTime(data.dt);
+            weather.sunrise = data.sys.sunrise;
+            weather.sunset = data.sys.sunset;
+            weather.timezone = data.timezone;
+            
+           
            
         })
         .then(function(){
+            
+            let tz = (weather.timezone)/3600;
+            let snrise = weather.sunrise;
+            let snset = weather.sunset; 
+            let dt = moment().utc().add(tz,'hours').format("dddd, MMMM Do YYYY");
+            let date = document.querySelector('.date');
+            let t = moment.utc().add(tz,'hours').format('hh:mm A '+tz+ ' z');       
+            sunSet.innerHTML = snset ? moment.unix(snset).format('hh:mm A') : 'Not Available';
+            sunRise.innerHTML = snrise ? moment.unix(snrise).format('hh:mm A') : 'Not Available';
+            timeCity.innerHTML = t; 
+            date.textContent = dt;
             displayWeather();
             cb();
-            
         });
         
     }
 
 
 
-    function convertTime(unixtime){
-        let dt = new Date(unixtime*1000);
-        let h =  dt.getHours();
-        let m = "0" + dt.getMinutes();
-        let t = h + ":" + m.substr(-2);
-        return t;
+    
         
-    }
+    
     
 
 
@@ -121,8 +128,7 @@ function displayWeather(){
     windDegElement.innerHTML = `${weather.wind_deg}<span>° ${nameWind()}</span>`;
     tempMax.innerHTML = `${weather.temp_max}<span>°C</span>`;
     tempMin.innerHTML = `${weather.temp_min}<span>°C</span>`;
-    sunRise.innerHTML = `${weather.sunrise}<span> AM</span>`;
-    sunSet.innerHTML = `${weather.sunset}<span> PM</span>`;
+   
     
     
     
@@ -171,11 +177,7 @@ cF.addEventListener("click", function(){
 
 
 
-// SHOW DATE 
-let date=document.querySelector('.date');
-let today=new Date();
-const options={ year: 'numeric', month: 'long', day: 'numeric', weekday: 'long'};
-date.textContent=today.toLocaleDateString('en-US',options);
+
 
 // SHOW TIME
    function Clock (){
@@ -186,7 +188,7 @@ date.textContent=today.toLocaleDateString('en-US',options);
    }
   
    function amPm(time){
-       if (time<12){
+       if (getHour(time)<12){
            return " AM";
        }else{
            return " PM";
@@ -209,6 +211,7 @@ date.textContent=today.toLocaleDateString('en-US',options);
 // GET WEATHER FROM SEARCH BAR
 
  btn_search.onclick = function() {
+     
     let city = document.getElementById('city').value;
    
     let api = `https://api.openweathermap.org/data/2.5/weather?q=${city}&appid=${key}`;
@@ -235,16 +238,23 @@ date.textContent=today.toLocaleDateString('en-US',options);
         weather.humidity = data.main.humidity;
         weather.wind_speed = Math.floor(data.wind.speed*3.6);
         weather.wind_deg = data.wind.deg;
-        weather.sunrise = (data.sys.sunrise);
-        weather.sunset = (data.sys.sunset);
-        weather.timezone = (data.timezone);
+        weather.timezone = data.timezone;
+        weather.dt = data.dt;
+        weather.sunrise = data.sys.sunrise;
+        weather.sunset = data.sys.sunset;
     })
-    .then(function(){
-       
+    .then(function(){ 
+        let tz = (weather.timezone)/3600;
+        let snrise = weather.sunrise;
+        let snset = weather.sunset; 
+        let dt = moment().utc().add(tz,'hours').format("dddd, MMMM Do YYYY");
+        let date = document.querySelector('.date');
+        let t = moment.utc().add(tz,'hours').format('hh:mm A '+tz+ ' z');       
+        sunSet.innerHTML = snset ? moment.unix(snset).utc().add(tz,'hours').format('hh:mm A') : 'Not Available';
+        sunRise.innerHTML = snrise ? moment.unix(snrise).utc().add(tz,'hours').format('hh:mm A') : 'Not Available';
+        timeCity.innerHTML = t; 
+        date.textContent = dt;
         displayWeather();
-       timezone = `${weather.timezone}`;
-        
-
     })
        .catch(error => {
        let nameCity = ('Ops, the city has not been found. Try again');
@@ -260,20 +270,11 @@ date.textContent=today.toLocaleDateString('en-US',options);
        tempMax.innerHTML = `°<span>C</span>`;
        tempMin.innerHTML = `°<span>C</span>`;
        sunRise.innerHTML = `<span>-</span>`;
-       sunSet.innerHTML = `<span>-</span>`;     
-      
+       sunSet.innerHTML = `<span>-</span>`;
+       timeCity.innerHTML = `<p>-</p>`; 
 })
 }
 
-function cityTime(timezone){
-    let t = document.querySelector('.timeCity')
-    let timezoneOffset = (timezone)/3600;
-    let d = new Date();
-    let hh = d.getHours();
-    let mm = d.getMinutes(); 
-    t.textContent = hh + ":" + mm;
-
-}
 
 
 
@@ -473,53 +474,4 @@ function convertLongDecToDMS(myLng) {
     return `${degrees}° ${minutes}' ${seconds.toFixed(3)}" ${cardinalDir}`;
   }
 
-  var map;
-
-  function load_map() {
-    map = new L.Map('map', {zoomControl: false});
-  
-    var osmUrl = 'http://{s}.tile.openstreetmap.org/{z}/{x}/{y}.png',
-      osmAttribution = 'Map data &copy; 2012 <a href="http://openstreetmap.org">OpenStreetMap</a> contributors',
-      osm = new L.TileLayer(osmUrl, {maxZoom: 18, attribution: osmAttribution});
-  
-    map.setView(new L.LatLng(0, 0), 12).addLayer(osm);
-  }
-
-  function addr_search() {
-    var inp = document.getElementById("city");
-  
-    $.getJSON('http://nominatim.openstreetmap.org/search?format=json&limit=5&q='+ inp.value, function(data) {
-  
-        var items = [];
-
-        $.each(data, function(key, val) {
-          items.push(
-            "<li><a href='#' onclick='chooseAddr(" +
-            val.lat + ", " + val.lon + ");return false;'>" + val.display_name +
-            '</a></li>'
-          );
-        });
-
-        $('#results').empty();
-        if (items.length != 0) {
-          $('<p>', { html: "Search results:" }).appendTo('#results');
-          $('<ul/>', {
-            'class': 'my-new-list',
-            html: items.join('')
-          }).appendTo('#results');
-        } else {
-          $('<p>', { html: "No results found" }).appendTo('#results');
-        }
-      });
-    }
-
-    function chooseAddr(lat, lng, type) {
-        var location = new L.LatLng(lat, lng);
-        map.panTo(location);
-      
-        if (type == 'city' || type == 'administrative') {
-          map.setZoom(11);
-        } else {
-          map.setZoom(13);
-        }
-      }
+ 
