@@ -1,4 +1,5 @@
 
+
 // SELECT ELEMENTS
 const iconElement = document.querySelector(".weather-icon");
 const cityElement = document.querySelector(".city");
@@ -96,7 +97,7 @@ function getWeather(latitude, longitude){
             let snset = weather.sunset; 
             let dt = moment().utc().add(tz,'hours').format("dddd, MMMM Do YYYY");
             let date = document.querySelector('.date');
-            let t = moment.utc().add(tz,'hours').format('hh:mm A '+tz+ ' z');       
+            let t = moment.utc().add(tz,'hours').format('hh:mm A '+plusOrLess(tz)+ ' z');       
             sunSet.innerHTML = snset ? moment.unix(snset).format('hh:mm A') : 'Not Available';
             sunRise.innerHTML = snrise ? moment.unix(snrise).format('hh:mm A') : 'Not Available';
             timeCity.innerHTML = t; 
@@ -108,9 +109,14 @@ function getWeather(latitude, longitude){
     }
 
 
-
+function plusOrLess(tz){
+    if(tz>0){
+        return ('+'+tz);
+    }else{
+        return tz;
+    }
+}
     
-        
     
     
 
@@ -118,7 +124,7 @@ function getWeather(latitude, longitude){
 // DISPLAY WEATHER TO UI
 function displayWeather(){
     iconElement.innerHTML = `<img src="/public/icons/${weather.iconId}.png"/>`;
-    feelElement.innerHTML = `${weather.temperature.value}°<span>C</span>`;
+    feelElement.innerHTML = `${weather.temperature.value} °<span>C</span>`;
     descrElement.innerHTML = weather.description;
     cityElement.style.color = 'black';
     cityElement.innerHTML  = `${weather.city} , ${weather.country}`;
@@ -126,8 +132,8 @@ function displayWeather(){
     humidityElement.innerHTML = `${weather.humidity}<span> %</span>`;
     windSpeedElement.innerHTML = `${weather.wind_speed}<span> Km/h</span>`;
     windDegElement.innerHTML = `${weather.wind_deg}<span>° ${nameWind()}</span>`;
-    tempMax.innerHTML = `${weather.temp_max}<span>°C</span>`;
-    tempMin.innerHTML = `${weather.temp_min}<span>°C</span>`;
+    tempMax.innerHTML = `${weather.temp_max}<span> °C</span>`;
+    tempMin.innerHTML = `${weather.temp_min}<span> °C</span>`;
    
     
     
@@ -159,15 +165,15 @@ cF.addEventListener("click", function(){
         mph = Math.floor(mph);
 
         
-        feelElement.innerHTML = `${fahrenheit}°<span>F</span>`;
-        tempMax.innerHTML = `${fahrenheit1}°<span>F</span>`;
-        tempMin.innerHTML = `${fahrenheit2}°<span>F</span>`;
+        feelElement.innerHTML = `${fahrenheit} °<span>F</span>`;
+        tempMax.innerHTML = `${fahrenheit1} °<span>F</span>`;
+        tempMin.innerHTML = `${fahrenheit2} °<span>F</span>`;
         windSpeedElement.innerHTML = `${mph}<span> mph</span>`;
         weather.temperature.unit = "fahrenheit";
     }else{
-        feelElement.innerHTML = `${weather.temperature.value}°<span>C</span>`;
-        tempMax.innerHTML = `${weather.temp_max}°<span>C</span>`;
-        tempMin.innerHTML = `${weather.temp_min}°<span>C</span>`;
+        feelElement.innerHTML = `${weather.temperature.value} °<span>C</span>`;
+        tempMax.innerHTML = `${weather.temp_max} °<span>C</span>`;
+        tempMin.innerHTML = `${weather.temp_min} °<span>C</span>`;
         windSpeedElement.innerHTML = `${weather.wind_speed}<span> km/h</span>`;
         weather.temperature.unit = "celsius"
     }
@@ -249,7 +255,7 @@ cF.addEventListener("click", function(){
         let snset = weather.sunset; 
         let dt = moment().utc().add(tz,'hours').format("dddd, MMMM Do YYYY");
         let date = document.querySelector('.date');
-        let t = moment.utc().add(tz,'hours').format('hh:mm A '+tz+ ' z');       
+        let t = moment.utc().add(tz,'hours').format('hh:mm A '+plusOrLess(tz)+ ' z');       
         sunSet.innerHTML = snset ? moment.unix(snset).utc().add(tz,'hours').format('hh:mm A') : 'Not Available';
         sunRise.innerHTML = snrise ? moment.unix(snrise).utc().add(tz,'hours').format('hh:mm A') : 'Not Available';
         timeCity.innerHTML = t; 
@@ -267,8 +273,8 @@ cF.addEventListener("click", function(){
        humidityElement.innerHTML =  `<span>-</span> `;
        windSpeedElement.innerHTML =  `<span> Km/h</span> `;
        windDegElement.innerHTML =  `<span>-</span> `;
-       tempMax.innerHTML = `°<span>C</span>`;
-       tempMin.innerHTML = `°<span>C</span>`;
+       tempMax.innerHTML = ` °<span>C</span>`;
+       tempMin.innerHTML = ` °<span>C</span>`;
        sunRise.innerHTML = `<span>-</span>`;
        sunSet.innerHTML = `<span>-</span>`;
        timeCity.innerHTML = `<p>-</p>`; 
@@ -390,7 +396,6 @@ function cb(data) {
                    Long: ${convertLongDecToDMS(myLng)}<br/> 
                 Your address:<br>
                    ${display_name} <br>
-                    
                  `).openPopup()
 
 }
@@ -408,7 +413,7 @@ function success(position) {
   script.id = 'nominatim'
   script.async = true // This is required for asynchronous execution
   script.src = 'https://nominatim.openstreetmap.org/reverse?json_callback=cb&format=json&lat=' + myLat + '&lon=' +
-    myLng + '&zoom=27&addressdetails=1'
+    myLng + '&zoom=30&addressdetails=1'
   document.body.appendChild(script)
   myMarker = L.marker(latLng)
   document.body.removeChild(script)
@@ -441,7 +446,7 @@ var map = L.map('map', {
 // set up the OSM layer
 L.tileLayer(
   'https://{s}.tile.openstreetmap.org/{z}/{x}/{y}.png', {
-    maxZoom: maxZoom
+    maxZoom: maxZoom   
   }).addTo(map)
 
 

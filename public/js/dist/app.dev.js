@@ -74,7 +74,7 @@ function getWeather(latitude, longitude) {
     var snset = weather.sunset;
     var dt = moment().utc().add(tz, 'hours').format("dddd, MMMM Do YYYY");
     var date = document.querySelector('.date');
-    var t = moment.utc().add(tz, 'hours').format('hh:mm A ' + tz + ' z');
+    var t = moment.utc().add(tz, 'hours').format('hh:mm A ' + plusOrLess(tz) + ' z');
     sunSet.innerHTML = snset ? moment.unix(snset).format('hh:mm A') : 'Not Available';
     sunRise.innerHTML = snrise ? moment.unix(snrise).format('hh:mm A') : 'Not Available';
     timeCity.innerHTML = t;
@@ -82,12 +82,20 @@ function getWeather(latitude, longitude) {
     displayWeather();
     cb();
   });
+}
+
+function plusOrLess(tz) {
+  if (tz > 0) {
+    return '+' + tz;
+  } else {
+    return tz;
+  }
 } // DISPLAY WEATHER TO UI
 
 
 function displayWeather() {
   iconElement.innerHTML = "<img src=\"/public/icons/".concat(weather.iconId, ".png\"/>");
-  feelElement.innerHTML = "".concat(weather.temperature.value, "\xB0<span>C</span>");
+  feelElement.innerHTML = "".concat(weather.temperature.value, " \xB0<span>C</span>");
   descrElement.innerHTML = weather.description;
   cityElement.style.color = 'black';
   cityElement.innerHTML = "".concat(weather.city, " , ").concat(weather.country);
@@ -95,8 +103,8 @@ function displayWeather() {
   humidityElement.innerHTML = "".concat(weather.humidity, "<span> %</span>");
   windSpeedElement.innerHTML = "".concat(weather.wind_speed, "<span> Km/h</span>");
   windDegElement.innerHTML = "".concat(weather.wind_deg, "<span>\xB0 ").concat(nameWind(), "</span>");
-  tempMax.innerHTML = "".concat(weather.temp_max, "<span>\xB0C</span>");
-  tempMin.innerHTML = "".concat(weather.temp_min, "<span>\xB0C</span>");
+  tempMax.innerHTML = "".concat(weather.temp_max, "<span> \xB0C</span>");
+  tempMin.innerHTML = "".concat(weather.temp_min, "<span> \xB0C</span>");
 } // C to F conversion
 
 
@@ -121,15 +129,15 @@ cF.addEventListener("click", function () {
     fahrenheit1 = Math.floor(fahrenheit1);
     fahrenheit2 = Math.floor(fahrenheit2);
     mph = Math.floor(mph);
-    feelElement.innerHTML = "".concat(fahrenheit, "\xB0<span>F</span>");
-    tempMax.innerHTML = "".concat(fahrenheit1, "\xB0<span>F</span>");
-    tempMin.innerHTML = "".concat(fahrenheit2, "\xB0<span>F</span>");
+    feelElement.innerHTML = "".concat(fahrenheit, " \xB0<span>F</span>");
+    tempMax.innerHTML = "".concat(fahrenheit1, " \xB0<span>F</span>");
+    tempMin.innerHTML = "".concat(fahrenheit2, " \xB0<span>F</span>");
     windSpeedElement.innerHTML = "".concat(mph, "<span> mph</span>");
     weather.temperature.unit = "fahrenheit";
   } else {
-    feelElement.innerHTML = "".concat(weather.temperature.value, "\xB0<span>C</span>");
-    tempMax.innerHTML = "".concat(weather.temp_max, "\xB0<span>C</span>");
-    tempMin.innerHTML = "".concat(weather.temp_min, "\xB0<span>C</span>");
+    feelElement.innerHTML = "".concat(weather.temperature.value, " \xB0<span>C</span>");
+    tempMax.innerHTML = "".concat(weather.temp_max, " \xB0<span>C</span>");
+    tempMin.innerHTML = "".concat(weather.temp_min, " \xB0<span>C</span>");
     windSpeedElement.innerHTML = "".concat(weather.wind_speed, "<span> km/h</span>");
     weather.temperature.unit = "celsius";
   }
@@ -189,7 +197,7 @@ btn_search.onclick = function () {
     var snset = weather.sunset;
     var dt = moment().utc().add(tz, 'hours').format("dddd, MMMM Do YYYY");
     var date = document.querySelector('.date');
-    var t = moment.utc().add(tz, 'hours').format('hh:mm A ' + tz + ' z');
+    var t = moment.utc().add(tz, 'hours').format('hh:mm A ' + plusOrLess(tz) + ' z');
     sunSet.innerHTML = snset ? moment.unix(snset).utc().add(tz, 'hours').format('hh:mm A') : 'Not Available';
     sunRise.innerHTML = snrise ? moment.unix(snrise).utc().add(tz, 'hours').format('hh:mm A') : 'Not Available';
     timeCity.innerHTML = t;
@@ -207,8 +215,8 @@ btn_search.onclick = function () {
     humidityElement.innerHTML = "<span>-</span> ";
     windSpeedElement.innerHTML = "<span> Km/h</span> ";
     windDegElement.innerHTML = "<span>-</span> ";
-    tempMax.innerHTML = "\xB0<span>C</span>";
-    tempMin.innerHTML = "\xB0<span>C</span>";
+    tempMax.innerHTML = " \xB0<span>C</span>";
+    tempMin.innerHTML = " \xB0<span>C</span>";
     sunRise.innerHTML = "<span>-</span>";
     sunSet.innerHTML = "<span>-</span>";
     timeCity.innerHTML = "<p>-</p>";
@@ -316,7 +324,7 @@ function cb(data) {
     display_name = data.display_name;
   }
 
-  myMarker.addTo(map).bindPopup("<b>Your location</b><br/>\n                   Lat: ".concat(convertLatDecToDMS(myLat), "<br/> \n                   Long: ").concat(convertLongDecToDMS(myLng), "<br/> \n                Your address:<br>\n                   ").concat(display_name, " <br>\n                    \n                 ")).openPopup();
+  myMarker.addTo(map).bindPopup("<b>Your location</b><br/>\n                   Lat: ".concat(convertLatDecToDMS(myLat), "<br/> \n                   Long: ").concat(convertLongDecToDMS(myLng), "<br/> \n                Your address:<br>\n                   ").concat(display_name, " <br>\n                 ")).openPopup();
 }
 
 function success(position) {
@@ -329,7 +337,7 @@ function success(position) {
   script.id = 'nominatim';
   script.async = true; // This is required for asynchronous execution
 
-  script.src = 'https://nominatim.openstreetmap.org/reverse?json_callback=cb&format=json&lat=' + myLat + '&lon=' + myLng + '&zoom=27&addressdetails=1';
+  script.src = 'https://nominatim.openstreetmap.org/reverse?json_callback=cb&format=json&lat=' + myLat + '&lon=' + myLng + '&zoom=30&addressdetails=1';
   document.body.appendChild(script);
   myMarker = L.marker(latLng);
   document.body.removeChild(script);
