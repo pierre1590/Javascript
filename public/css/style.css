@@ -219,7 +219,7 @@ input:placeholder-shown{
 }
 
 
-.pressure, .humidity, .wind_speed, .wind_deg, .rain, .tempMax, .tempMin, .sunrise, .sunset{
+.pressure, .humidity, .wind_speed, .wind_deg, .rain, .tempMax, .tempMin, .sunrise, .sunset,.visibility, .uvi{
     text-decoration: underline;
     padding: 5px;
 }
@@ -334,6 +334,25 @@ input:placeholder-shown{
 }
 
 
+/* AIR QUALITY */
+
+#air{
+    width: 200px;
+    height:150px;
+    margin-top: 20px;
+    border-radius: 75%;
+    text-align: center;
+    padding-top: 30px;
+    margin-left:30%;
+    
+}
+
+.qualityIndex{
+    font-size:32px;
+}
+.descrQuality{
+    font-size:26px;;
+}
 
 /* MAP */
 #map{
@@ -371,7 +390,9 @@ input:placeholder-shown{
    ::-webkit-scrollbar{
        display: none;
    }
-      
+      #air{
+          margin-left:14%;
+      }
 }
 
 
@@ -389,6 +410,7 @@ input:placeholder-shown{
         margin: 0;
    }
     
+   
   
 }
 

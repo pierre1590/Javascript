@@ -13,11 +13,15 @@ var notificationElement = document.querySelector(".notification");
 var tempMax = document.querySelector(".tempMax span");
 var tempMin = document.querySelector(".tempMin span");
 var cF = document.querySelector(".celsfar input");
+var visible = document.querySelector(".visibility span");
 var sunRise = document.querySelector(".sunrise span ");
 var sunSet = document.querySelector(".sunset span");
-var timeCity = document.querySelector(".timeCity"); // App data
+var timeCity = document.querySelector(".timeCity");
+var airIndex = document.querySelector(".qualityIndex span");
+var descrQuality = document.querySelector(".descrQuality span"); // App data
 
 var weather = {};
+var air = {};
 weather.temperature = {
   unit: "celsius"
 }; // APP CONSTS AND VARS
@@ -39,6 +43,7 @@ function setPosition(position) {
   var longitude = position.coords.longitude;
   getWeather(latitude, longitude);
   cb(latitude, longitude);
+  airQuality(latitude, longitude);
 } // SHOW ERROR WHEN THERE IS AN ISSUE WITH GEOLOCATION SERVICE
 
 
@@ -68,6 +73,7 @@ function getWeather(latitude, longitude) {
     weather.sunrise = data.sys.sunrise;
     weather.sunset = data.sys.sunset;
     weather.timezone = data.timezone;
+    weather.visibility = data.visibility.toFixed;
   }).then(function () {
     var tz = weather.timezone / 3600;
     var snrise = weather.sunrise;
@@ -81,6 +87,7 @@ function getWeather(latitude, longitude) {
     date.textContent = dt;
     displayWeather();
     cb();
+    airQuality();
   });
 }
 
@@ -176,6 +183,8 @@ btn_search.onclick = function () {
     var data = response.json();
     return data;
   }).then(function (data) {
+    weather.latitude = data.coord.lon;
+    weather.longitude = data.coord.lat;
     weather.temperature.value = Math.floor(data.main.temp - KELVIN);
     weather.temp_max = Math.floor(data.main.temp_max - KELVIN);
     weather.temp_min = Math.floor(data.main.temp_min - KELVIN);
@@ -192,6 +201,8 @@ btn_search.onclick = function () {
     weather.sunrise = data.sys.sunrise;
     weather.sunset = data.sys.sunset;
   }).then(function () {
+    var latitude = weather.latitude;
+    var longitude = weather.longitude;
     var tz = weather.timezone / 3600;
     var snrise = weather.sunrise;
     var snset = weather.sunset;
@@ -203,6 +214,7 @@ btn_search.onclick = function () {
     timeCity.innerHTML = t;
     date.textContent = dt;
     displayWeather();
+    airQuality(latitude, longitude);
   })["catch"](function (error) {
     var nameCity = 'Ops, the city has not been found. Try again';
     cityElement.style.color = 'red';
@@ -228,6 +240,7 @@ function getLocation() {
     navigator.geolocation.getCurrentPosition(function (position) {
       latitude = position.coords.latitude;
       longitude = position.coords.longitude;
+      airQuality(latitude, longitude);
       getWeather(latitude, longitude);
       cb(latitude, longitude, display_name);
     });
@@ -390,4 +403,22 @@ function convertLongDecToDMS(myLng) {
   var seconds = ((longAbs - degrees) * 60 - minutes) * 60;
   var cardinalDir = myLng >= 0 ? 'E' : 'W';
   return "".concat(degrees, "\xB0 ").concat(minutes, "' ").concat(seconds.toFixed(3), "\" ").concat(cardinalDir);
+} // INDEX AIR
+
+
+function airQuality(latitude, longitude) {
+  var api = "";
+  fetch(api).then(function (response) {
+    var data = response.json();
+    return data;
+  }).then(function (data) {
+    air.aqi = data.aqi;
+  }).then(function () {})["catch"](function (error) {
+    airIndex.innerHTML = "<span>-</span>";
+    descrQuality.innerHTML = "<span>-</span>";
+  });
+}
+
+function showAir(aqi) {
+  airIndex.innerHTML = "".concat(aqi, "<span> </span>");
 }

@@ -13,14 +13,17 @@ const notificationElement = document.querySelector(".notification");
 const tempMax = document.querySelector(".tempMax span");
 const tempMin = document.querySelector(".tempMin span");
 const cF = document.querySelector(".celsfar input");
+const visibility = document.querySelector(".visibility span");
 const sunRise = document.querySelector(".sunrise span ");
 const sunSet = document.querySelector(".sunset span");
 const timeCity = document.querySelector(".timeCity");
-
+const airIndex = document.querySelector(".qualityIndex span");
+const descrQuality = document.querySelector(".descrQuality span");
 
 
 // App data
 const weather = {};
+const air = {};
 
 weather.temperature = {
     unit : "celsius"
@@ -31,6 +34,8 @@ weather.temperature = {
 const KELVIN = 273;
 // API KEY
 const key = '0fcc183ed08bd13e496e5445fc167de6';
+
+
 
 // CHECK IF BROWSER SUPPORTS GEOLOCATION
 if('geolocation' in navigator){
@@ -46,7 +51,8 @@ function setPosition(position){
     let longitude = position.coords.longitude;
     getWeather(latitude, longitude);
     cb(latitude, longitude);
-  
+    showAir(latitude, longitude);
+   
 }
 
     
@@ -63,7 +69,7 @@ function showError(error){
 // GET WEATHER FROM API PROVIDER
 function getWeather(latitude, longitude){
    
-    let api = `http://api.openweathermap.org/data/2.5/weather?lat=${latitude}&lon=${longitude}&appid=${key}`;
+    let api = `http://api.openweathermap.org/data/2.5/weather?lat=${latitude}&lon=${longitude}&appid=${key}&lang=en`;
     
     
     fetch(api)
@@ -86,7 +92,7 @@ function getWeather(latitude, longitude){
             weather.sunrise = data.sys.sunrise;
             weather.sunset = data.sys.sunset;
             weather.timezone = data.timezone;
-            
+            weather.visibility = (data.visibility/1000).toFixed(01);
            
            
         })
@@ -97,13 +103,16 @@ function getWeather(latitude, longitude){
             let snset = weather.sunset; 
             let dt = moment().utc().add(tz,'hours').format("dddd, MMMM Do YYYY");
             let date = document.querySelector('.date');
-            let t = moment.utc().add(tz,'hours').format('hh:mm A '+plusOrLess(tz)+ ' z');       
+            let t = moment.utc().add(tz,'hours').format('hh:mm A' +' z'+plusOrLess(tz));       
             sunSet.innerHTML = snset ? moment.unix(snset).format('hh:mm A') : 'Not Available';
             sunRise.innerHTML = snrise ? moment.unix(snrise).format('hh:mm A') : 'Not Available';
             timeCity.innerHTML = t; 
             date.textContent = dt;
+            
             displayWeather();
             cb();
+            showAir(latitude, longitude);
+            
         });
         
     }
@@ -134,7 +143,7 @@ function displayWeather(){
     windDegElement.innerHTML = `${weather.wind_deg}<span>° ${nameWind()}</span>`;
     tempMax.innerHTML = `${weather.temp_max}<span> °C</span>`;
     tempMin.innerHTML = `${weather.temp_min}<span> °C</span>`;
-   
+    visibility.innerHTML = `${weather.visibility}<span> Km</span>`;
     
     
     
@@ -220,7 +229,7 @@ cF.addEventListener("click", function(){
      
     let city = document.getElementById('city').value;
    
-    let api = `https://api.openweathermap.org/data/2.5/weather?q=${city}&appid=${key}`;
+    let api = `https://api.openweathermap.org/data/2.5/weather?q=${city}&appid=${key}&lang=en`;
 
 
    
@@ -232,7 +241,8 @@ cF.addEventListener("click", function(){
     })
    
     .then(function(data){
-        
+        weather.latitude = data.coord.lon;
+        weather.longitude = data.coord.lat;
         weather.temperature.value = Math.floor(data.main.temp - KELVIN);
         weather.temp_max = Math.floor(data.main.temp_max - KELVIN);
         weather.temp_min = Math.floor(data.main.temp_min - KELVIN);
@@ -248,19 +258,26 @@ cF.addEventListener("click", function(){
         weather.dt = data.dt;
         weather.sunrise = data.sys.sunrise;
         weather.sunset = data.sys.sunset;
+        weather.visibility = (data.visibility/1000).toFixed(01);
     })
     .then(function(){ 
+        
+        let latitude = weather.latitude;
+        let longitude = weather.longitude;
         let tz = (weather.timezone)/3600;
         let snrise = weather.sunrise;
         let snset = weather.sunset; 
         let dt = moment().utc().add(tz,'hours').format("dddd, MMMM Do YYYY");
         let date = document.querySelector('.date');
-        let t = moment.utc().add(tz,'hours').format('hh:mm A '+plusOrLess(tz)+ ' z');       
+        let t = moment.utc().add(tz,'hours').format('hh:mm A '+ ' z'+plusOrLess(tz)) ;       
         sunSet.innerHTML = snset ? moment.unix(snset).utc().add(tz,'hours').format('hh:mm A') : 'Not Available';
         sunRise.innerHTML = snrise ? moment.unix(snrise).utc().add(tz,'hours').format('hh:mm A') : 'Not Available';
         timeCity.innerHTML = t; 
         date.textContent = dt;
         displayWeather();
+        showAir(latitude,longitude);
+       
+        
     })
        .catch(error => {
        let nameCity = ('Ops, the city has not been found. Try again');
@@ -278,6 +295,8 @@ cF.addEventListener("click", function(){
        sunRise.innerHTML = `<span>-</span>`;
        sunSet.innerHTML = `<span>-</span>`;
        timeCity.innerHTML = `<p>-</p>`; 
+       visibility.innerHTML = `<span> Km</span>`;
+       
 })
 }
 
@@ -293,6 +312,8 @@ function getLocation() {
        
        getWeather(latitude, longitude);
        cb(latitude, longitude,display_name);
+       showAir(latitude, longitude); 
+       
        
     });
  } else {
@@ -480,3 +501,45 @@ function convertLongDecToDMS(myLng) {
   }
 
  
+ function showAir(latitude, longitude){
+     let maxIndex;
+
+     let api = `http://api.openweathermap.org/data/2.5/air_pollution?lat=${latitude}&lon=${longitude}&appid=${key}`;
+
+    fetch(api)
+    .then(function(response){
+        let data = response.json();
+        return data;
+    })
+    .then(function(data){
+        air.co = data.list[0].components.co.toFixed(2);
+        air.no = data.list[0].components.no.toFixed(2);
+        air.no2 = data.list[0].components.no2.toFixed(2);
+        air.o3 = data.list[0].components.o3.toFixed(2);
+        air.so2 = data.list[0].components.so2.toFixed(2);
+        air.pm2_5 = data.list[0].components.pm2_5.toFixed(2);
+        air.pm10 = data.list[0].components.pm10.toFixed(2);
+        air.nh3 = data.list[0].components.nh3.toFixed(2);
+    })
+    .then(function(){
+        let co, no, no2, o3, so2, pm2_5, pm10, nh3;
+
+        co = `${air.co}`;
+        no = `${air.no}`;
+        no2 = `${air.no2}`;
+        o3 = `${air.o3}`;
+        so2 = `${air.so2}`;
+        pm2_5 = `${air.pm2_5}`;
+        pm10 = `${air.pm10}`;
+        nh3 = `${air.nh3}`;
+
+        maxIndex = Math.max(co,no, no2, o3,so2,pm2_5,pm10,nh3);
+    
+    
+    })
+ }
+
+
+
+
+
