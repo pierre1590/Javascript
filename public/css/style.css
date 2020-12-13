@@ -336,22 +336,23 @@ input:placeholder-shown{
 
 /* AIR QUALITY */
 
-#air{
-    width: 200px;
-    height:150px;
-    margin-top: 20px;
-    border-radius: 75%;
+.airQuality{
+    width: 210px;
+    height:140px;
+    
+    border-radius: 85%;
     text-align: center;
     padding-top: 30px;
-    margin-left:30%;
-    
+    margin-left: 25%;
+    color: #000;
+   
 }
 
 .qualityIndex{
-    font-size:32px;
+    font-size:40px;
 }
 .descrQuality{
-    font-size:26px;;
+    font-size:30px;;
 }
 
 /* MAP */
@@ -390,8 +391,8 @@ input:placeholder-shown{
    ::-webkit-scrollbar{
        display: none;
    }
-      #air{
-          margin-left:14%;
+      .airQuality{
+          margin-left:10%;
       }
 }
 

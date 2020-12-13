@@ -18,8 +18,7 @@ const sunRise = document.querySelector(".sunrise span ");
 const sunSet = document.querySelector(".sunset span");
 const timeCity = document.querySelector(".timeCity");
 const airIndex = document.querySelector(".qualityIndex span");
-const descrQuality = document.querySelector(".descrQuality span");
-
+const desc = document.querySelector(".descr span");
 
 // App data
 const weather = {};
@@ -103,7 +102,7 @@ function getWeather(latitude, longitude){
             let snset = weather.sunset; 
             let dt = moment().utc().add(tz,'hours').format("dddd, MMMM Do YYYY");
             let date = document.querySelector('.date');
-            let t = moment.utc().add(tz,'hours').format('hh:mm A' +' z'+plusOrLess(tz));       
+            let t = moment.utc().add(tz,'hours').format('hh:mm A' +' z '+plusOrLess(tz));       
             sunSet.innerHTML = snset ? moment.unix(snset).format('hh:mm A') : 'Not Available';
             sunRise.innerHTML = snrise ? moment.unix(snrise).format('hh:mm A') : 'Not Available';
             timeCity.innerHTML = t; 
@@ -111,7 +110,7 @@ function getWeather(latitude, longitude){
             
             displayWeather();
             cb();
-            showAir(latitude, longitude);
+            showAir();
             
         });
         
@@ -269,7 +268,7 @@ cF.addEventListener("click", function(){
         let snset = weather.sunset; 
         let dt = moment().utc().add(tz,'hours').format("dddd, MMMM Do YYYY");
         let date = document.querySelector('.date');
-        let t = moment.utc().add(tz,'hours').format('hh:mm A '+ ' z'+plusOrLess(tz)) ;       
+        let t = moment.utc().add(tz,'hours').format('hh:mm A '+ ' z '+plusOrLess(tz)) ;       
         sunSet.innerHTML = snset ? moment.unix(snset).utc().add(tz,'hours').format('hh:mm A') : 'Not Available';
         sunRise.innerHTML = snrise ? moment.unix(snrise).utc().add(tz,'hours').format('hh:mm A') : 'Not Available';
         timeCity.innerHTML = t; 
@@ -296,9 +295,16 @@ cF.addEventListener("click", function(){
        sunSet.innerHTML = `<span>-</span>`;
        timeCity.innerHTML = `<p>-</p>`; 
        visibility.innerHTML = `<span> Km</span>`;
+       let airError = ('Data not available');
+       airIndex.innerHTML = airError;
+       airIndex.style.color = 'red';
+       desc.innerHTML = '';
+       document.querySelector('.airQuality').style.backgroundColor= null;
        
 })
 }
+
+
 
 
 
@@ -312,7 +318,7 @@ function getLocation() {
        
        getWeather(latitude, longitude);
        cb(latitude, longitude,display_name);
-       showAir(latitude, longitude); 
+       showAir(latitude, longitude);
        
        
     });
@@ -502,9 +508,9 @@ function convertLongDecToDMS(myLng) {
 
  
  function showAir(latitude, longitude){
-     let maxIndex;
+    
 
-     let api = `http://api.openweathermap.org/data/2.5/air_pollution?lat=${latitude}&lon=${longitude}&appid=${key}`;
+     let api = `http://api.openweathermap.org/data/2.5/air_pollution/forecast?lat=${latitude}&lon=${longitude}&appid=${key}`;
 
     fetch(api)
     .then(function(response){
@@ -512,34 +518,45 @@ function convertLongDecToDMS(myLng) {
         return data;
     })
     .then(function(data){
-        air.co = data.list[0].components.co.toFixed(2);
-        air.no = data.list[0].components.no.toFixed(2);
-        air.no2 = data.list[0].components.no2.toFixed(2);
-        air.o3 = data.list[0].components.o3.toFixed(2);
-        air.so2 = data.list[0].components.so2.toFixed(2);
-        air.pm2_5 = data.list[0].components.pm2_5.toFixed(2);
-        air.pm10 = data.list[0].components.pm10.toFixed(2);
-        air.nh3 = data.list[0].components.nh3.toFixed(2);
+        air.aqi = data.list[0].main.aqi;
+       
+
     })
     .then(function(){
-        let co, no, no2, o3, so2, pm2_5, pm10, nh3;
-
-        co = `${air.co}`;
-        no = `${air.no}`;
-        no2 = `${air.no2}`;
-        o3 = `${air.o3}`;
-        so2 = `${air.so2}`;
-        pm2_5 = `${air.pm2_5}`;
-        pm10 = `${air.pm10}`;
-        nh3 = `${air.nh3}`;
-
-        maxIndex = Math.max(co,no, no2, o3,so2,pm2_5,pm10,nh3);
+        let aqi = `${air.aqi}`;
+        airIndex.innerHTML = `${aqi}<span> </span>`;
+        airIndex.style.color = 'black';
+        if (aqi==1){
+            desc.innerHTML = ('Excellent');
+            document.querySelector('.airQuality').style.backgroundColor = '#1af';
+        }else if(aqi==2) {
+            desc.innerHTML = ('Good');
+            document.querySelector('.airQuality').style.backgroundColor = '#0f0';
+        } else if (aqi==3) {
+            desc.innerHTML = ('Moderate');
+            document.querySelector('.airQuality').style.backgroundColor = '#ff0';
     
+        } else if (aqi==4){
+            desc.innerHTML = ('Unhealthy');
+            document.querySelector('.airQuality').style.backgroundColor = '#f70';
+        } else if (aqi==5) {
+            desc.innerHTML = ('Very Unhealthy');
+            document.querySelector('.airQuality').style.backgroundColor = '#f01';
+        } 
+       
+      
+       
+       
     
     })
+    .catch(error => {
+        let airError = ('Data not available');
+        airIndex.innerHTML = airError;
+        airIndex.style.color = 'red';
+        desc.innerHTML = '';
+        document.querySelector('.airQuality').style.backgroundColor= null;
+      });
  }
 
-
-
-
-
+ 
+ 
