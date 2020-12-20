@@ -272,7 +272,7 @@ cF.addEventListener("click", function(){
         date.textContent = dt;
         showAir(latitude, longitude);
         displayWeather();
-       showCity();
+        showCity();
        
     })
        .catch(error => {
@@ -557,7 +557,7 @@ function convertLongDecToDMS(myLng) {
 
  function showCity(){
     let inp = document.getElementById('city').value;
-    $.getJSON('http://nominatim.openstreetmap.org/search?format=json&addressdetails=1&limit=5&q='+inp, function(data) {
+    $.getJSON('http://nominatim.openstreetmap.org/search?format=json&addressdetails=1&limit=8&q='+inp, function(data) {
     
     var items = [];
     
@@ -589,10 +589,10 @@ function convertLongDecToDMS(myLng) {
         map.panTo(location);
 
         if (type == 'city' || type == 'administrative'){
-            map.setZoom(12);
+            map.setZoom(14);
            
         } else {
-            map.setZoom(9);
+            map.setZoom(15);
             
         }
     }

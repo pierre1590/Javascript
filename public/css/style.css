@@ -210,20 +210,36 @@ input:placeholder-shown{
  /* RESULTS */
 #results{
     font-style: sans-serif;
-    color: #00f;
+    color: #01f;
     font-size: 75%;
     width:55%;
-    
     background-color: #fff;
-    border-bottom-left-radius: 10%;
-    border-bottom-right-radius: 10%;
-    
+    overflow: hidden;
+    border-bottom-left-radius: 10px;
+    border-bottom-right-radius: 10px;
+    margin-left: 23%;
 }
 
 #results li {
     display: block;
-    
+    padding:2px;
 }
+    
+
+
+#results li:hover {
+    background-color:rgba(169, 211, 245, 0.4);
+    border-radius: 8px;
+    transform: scale(1.06);
+}
+
+#results li :active{
+    color: #01f;
+}
+
+
+
+
 
 /* SUNRISE AND SUNSET */
 .sunset img, .sunrise img{
@@ -414,6 +430,7 @@ input:placeholder-shown{
     margin-left: 15%;
     
 }
+
    
    
 
@@ -439,6 +456,7 @@ input:placeholder-shown{
    .airQuality{
     margin-left:21.5%;
 }
+
   
 }
 
