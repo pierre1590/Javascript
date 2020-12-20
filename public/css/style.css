@@ -6,7 +6,7 @@
 
  
 body{
-    background:url('/public/img/weather.jpg');
+    background:url('/public/background/weather.jpg');
     background-size: cover;
     
     height:100%;
@@ -15,7 +15,7 @@ body{
    
   -webkit-font-smoothing: antialiased;
   -moz-osx-font-smoothing: grayscale;
-
+  
 }
 
 ::-webkit-scrollbar{
@@ -45,7 +45,7 @@ body{
    
     border: 1px dotted #007;
     border-radius:10px;
-    opacity:0.7;
+    opacity:0.85;
     background-color: aliceblue;
 }
 
@@ -119,7 +119,7 @@ h2{
     width: 33px;
     height: 27px;
     background: aliceblue;
-    opacity: 0.7;
+    opacity: 0.6;
     
 }
 
@@ -153,13 +153,7 @@ input[type=text]{
     font-family: 'Courgette', cursive;
 }
 
-#results{
-    border-bottom-left-radius: 10px;
-    border-bottom-right-radius: 10px;
-    z-index: 3;
-    background-color:#fff;
-    opacity:0.8;
-}
+
 
 input:focus {
     outline:none;
@@ -188,6 +182,8 @@ input:placeholder-shown{
     color: whitesmoke;
     background-color: lightskyblue;
     font-family: 'Courgette', cursive;
+    
+    
 }
 
 #btn_search:focus{
@@ -209,6 +205,24 @@ input:placeholder-shown{
     font-size: 35px;
     font-weight: bold;
    
+}
+
+ /* RESULTS */
+#results{
+    font-style: sans-serif;
+    color: #00f;
+    font-size: 75%;
+    width:55%;
+    
+    background-color: #fff;
+    border-bottom-left-radius: 10%;
+    border-bottom-right-radius: 10%;
+    
+}
+
+#results li {
+    display: block;
+    
 }
 
 /* SUNRISE AND SUNSET */
@@ -306,7 +320,6 @@ input:placeholder-shown{
     left:42px;
   }
 
-  /* SEARCH RESULTS */
   
   
   
@@ -324,41 +337,44 @@ input:placeholder-shown{
     flex: 1;
 
     margin: 2px;
-    padding: 10px;
+    padding: 15px;
 }
 .column:first-child {
-    margin-left: 5px;
+    margin-left: 15px;
 }
 .column:last-child {
-    margin-right: 0;
+    margin-right: 20px;
 }
 
 
 /* AIR QUALITY */
 
 .airQuality{
+    padding:5px;
     width: 210px;
     height:140px;
-    
     border-radius: 85%;
     text-align: center;
     padding-top: 30px;
-    margin-left: 25%;
+    margin-left: 110px;
+    margin-right: 15px;;
     color: #000;
    
 }
 
 .qualityIndex{
-    font-size:40px;
+    font-size:38px;
+    padding: 2px;
 }
 .descrQuality{
-    font-size:30px;;
+    font-size:38px;
+    padding: 2px;
 }
 
 /* MAP */
 #map{
     width:100%;
-    height: 350px;
+    height: 330px;
     border-radius: 8px;
     margin:0 auto;
 }
@@ -366,6 +382,8 @@ input:placeholder-shown{
 
 
 /*Media Queries*/
+
+
 
 @media only screen and (max-width:489px){
   
@@ -391,10 +409,17 @@ input:placeholder-shown{
    ::-webkit-scrollbar{
        display: none;
    }
-      .airQuality{
-          margin-left:10%;
-      }
+   
+   .airQuality{
+    margin-left: 15%;
+    
 }
+   
+   
+
+}
+
+
 
 
 @media only  screen and (max-width:980px){
@@ -411,7 +436,9 @@ input:placeholder-shown{
         margin: 0;
    }
     
-   
+   .airQuality{
+    margin-left:21.5%;
+}
   
 }
 

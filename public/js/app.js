@@ -1,5 +1,3 @@
-
-
 // SELECT ELEMENTS
 const iconElement = document.querySelector(".weather-icon");
 const cityElement = document.querySelector(".city");
@@ -49,11 +47,9 @@ function setPosition(position){
     let latitude = position.coords.latitude;
     let longitude = position.coords.longitude;
     getWeather(latitude, longitude);
-    cb(latitude, longitude);
     showAir(latitude, longitude);
-   
+    cb(latitude, longitude);
 }
-
     
 
 // SHOW ERROR WHEN THERE IS AN ISSUE WITH GEOLOCATION SERVICE
@@ -68,7 +64,7 @@ function showError(error){
 // GET WEATHER FROM API PROVIDER
 function getWeather(latitude, longitude){
    
-    let api = `http://api.openweathermap.org/data/2.5/weather?lat=${latitude}&lon=${longitude}&appid=${key}&lang=en`;
+    let api = `http://api.openweathermap.org/data/2.5/weather?lat=${latitude}&lon=${longitude}&appid=${key}&lang=it`;
     
     
     fetch(api)
@@ -96,7 +92,7 @@ function getWeather(latitude, longitude){
            
         })
         .then(function(){
-            
+            let icon = weather.iconId;
             let tz = (weather.timezone)/3600;
             let snrise = weather.sunrise;
             let snset = weather.sunset; 
@@ -107,10 +103,10 @@ function getWeather(latitude, longitude){
             sunRise.innerHTML = snrise ? moment.unix(snrise).format('hh:mm A') : 'Not Available';
             timeCity.innerHTML = t; 
             date.textContent = dt;
-            
+            showAir(latitude, longitude);
             displayWeather();
             cb();
-            showAir();
+            
             
         });
         
@@ -228,7 +224,7 @@ cF.addEventListener("click", function(){
      
     let city = document.getElementById('city').value;
    
-    let api = `https://api.openweathermap.org/data/2.5/weather?q=${city}&appid=${key}&lang=en`;
+    let api = `https://api.openweathermap.org/data/2.5/weather?q=${city}&appid=${key}&lang=it`;
 
 
    
@@ -261,8 +257,9 @@ cF.addEventListener("click", function(){
     })
     .then(function(){ 
         
-        let latitude = weather.latitude;
-        let longitude = weather.longitude;
+        let latitude = `${weather.latitude}`;
+        let longitude = `${weather.longitude}`;
+        let icon = weather.iconId;
         let tz = (weather.timezone)/3600;
         let snrise = weather.sunrise;
         let snset = weather.sunset; 
@@ -273,10 +270,10 @@ cF.addEventListener("click", function(){
         sunRise.innerHTML = snrise ? moment.unix(snrise).utc().add(tz,'hours').format('hh:mm A') : 'Not Available';
         timeCity.innerHTML = t; 
         date.textContent = dt;
+        showAir(latitude, longitude);
         displayWeather();
-        showAir(latitude,longitude);
+       showCity();
        
-        
     })
        .catch(error => {
        let nameCity = ('Ops, the city has not been found. Try again');
@@ -510,7 +507,7 @@ function convertLongDecToDMS(myLng) {
  function showAir(latitude, longitude){
     
 
-     let api = `http://api.openweathermap.org/data/2.5/air_pollution/forecast?lat=${latitude}&lon=${longitude}&appid=${key}`;
+     let api = `http://api.openweathermap.org/data/2.5/air_pollution?lat=${latitude}&lon=${longitude}&appid=${key}`;
 
     fetch(api)
     .then(function(response){
@@ -519,11 +516,14 @@ function convertLongDecToDMS(myLng) {
     })
     .then(function(data){
         air.aqi = data.list[0].main.aqi;
-       
+        
 
     })
     .then(function(){
         let aqi = `${air.aqi}`;
+        let pm2_5 = `${air.pm2_5}`;
+        let pm10 = `${air.pm10}`;
+        let no2 = `${air.no2}`;
         airIndex.innerHTML = `${aqi}<span> </span>`;
         airIndex.style.color = 'black';
         if (aqi==1){
@@ -538,16 +538,12 @@ function convertLongDecToDMS(myLng) {
     
         } else if (aqi==4){
             desc.innerHTML = ('Unhealthy');
-            document.querySelector('.airQuality').style.backgroundColor = '#f70';
+            document.querySelector('.airQuality').style.backgroundColor = 'orange';
         } else if (aqi==5) {
             desc.innerHTML = ('Very Unhealthy');
             document.querySelector('.airQuality').style.backgroundColor = '#f01';
         } 
        
-      
-       
-       
-    
     })
     .catch(error => {
         let airError = ('Data not available');
@@ -558,5 +554,48 @@ function convertLongDecToDMS(myLng) {
       });
  }
 
+
+ function showCity(){
+    let inp = document.getElementById('city').value;
+    $.getJSON('http://nominatim.openstreetmap.org/search?format=json&addressdetails=1&limit=5&q='+inp, function(data) {
+    
+    var items = [];
+    
+    $.each(data,function(key,val){
+            items.push(
+                "<li><a href='#' onclick='chooseCity(" +
+                val.lat+ ", " +val.lon+");return false;'>"+val.display_name+'</a></li>'
+            );
+    });
  
- 
+
+    $('#results').empty();
+    if(items.length !=0){
+        $('<p>', {html: "Search results:"}).appendTo('#results');
+        $('<ul>', {
+            'class': 'my-new-list',
+            html: items.join('')
+        }).appendTo('#results');
+    } else {
+        $('<p>', {html: "No results found"}).appendTo('#results');
+    }
+    });
+ }
+
+    function chooseCity(lat, lon,type) {
+        var location = new L.LatLng(lat, lon);
+        
+        
+        map.panTo(location);
+
+        if (type == 'city' || type == 'administrative'){
+            map.setZoom(12);
+           
+        } else {
+            map.setZoom(9);
+            
+        }
+    }
+    
+
+
