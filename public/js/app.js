@@ -398,7 +398,7 @@ function nameWind(){
 var center = [0, 0],
   zoom = 4,
   moreZoom = 12,
-  maxZoom = 22
+  maxZoom = 25
 
 // get location using the Geolocation interface
 var geoLocationOptions = {
@@ -410,6 +410,7 @@ var geoLocationOptions = {
 var myLat, myLng,  display_name, myMarker
 
 function cb(data) {
+    
     
   if(data.display_name){
       display_name = data.display_name;
@@ -437,7 +438,7 @@ function success(position) {
   script.id = 'nominatim'
   script.async = true // This is required for asynchronous execution
   script.src = 'https://nominatim.openstreetmap.org/reverse?json_callback=cb&format=json&lat=' + myLat + '&lon=' +
-    myLng + '&zoom=30&addressdetails=1'
+    myLng + '&zoom=24&addressdetails=1'
   document.body.appendChild(script)
   myMarker = L.marker(latLng)
   document.body.removeChild(script)
@@ -557,7 +558,8 @@ function convertLongDecToDMS(myLng) {
 
  function showCity(){
     let inp = document.getElementById('city').value;
-    $.getJSON('http://nominatim.openstreetmap.org/search?format=json&addressdetails=1&limit=8&q='+inp, function(data) {
+    map.removeLayer(myMarker);
+    $.getJSON('http://nominatim.openstreetmap.org/?addressdetails=1&q='+inp+'&format=json&limit=5', function(data) {
     
     var items = [];
     
@@ -580,21 +582,25 @@ function convertLongDecToDMS(myLng) {
         $('<p>', {html: "No results found"}).appendTo('#results');
     }
     });
+
+
  }
 
     function chooseCity(lat, lon,type) {
         var location = new L.LatLng(lat, lon);
-        
-        
+       
         map.panTo(location);
 
         if (type == 'city' || type == 'administrative'){
-            map.setZoom(14);
-           
+            map.setZoom(13);
+            
         } else {
-            map.setZoom(15);
+            map.setZoom(12);  
             
         }
+
+        
+
     }
     
 

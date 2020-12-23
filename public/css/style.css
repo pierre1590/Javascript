@@ -182,6 +182,7 @@ input:placeholder-shown{
     color: whitesmoke;
     background-color: lightskyblue;
     font-family: 'Courgette', cursive;
+    z-index: 1;
     
     
 }
@@ -199,6 +200,7 @@ input:placeholder-shown{
     font-size:35px;
     font-weight: bold;
     padding: 2px;
+    z-index: auto;
 }
 
 .feel{
@@ -212,12 +214,15 @@ input:placeholder-shown{
     font-style: sans-serif;
     color: #01f;
     font-size: 75%;
-    width:55%;
+    width:40%;
     background-color: #fff;
     overflow: hidden;
-    border-bottom-left-radius: 10px;
-    border-bottom-right-radius: 10px;
-    margin-left: 23%;
+    border-bottom-left-radius: 12px;
+    border-bottom-right-radius: 12px;
+    border-top-left-radius:8px;
+    border-top-right-radius: 8px;
+    margin-left: 30%;
+    
 }
 
 #results li {
@@ -230,7 +235,8 @@ input:placeholder-shown{
 #results li:hover {
     background-color:rgba(169, 211, 245, 0.4);
     border-radius: 8px;
-    transform: scale(1.06);
+    transform: scale(0.95);
+    
 }
 
 #results li :active{
@@ -302,7 +308,7 @@ input:placeholder-shown{
     font-size: 12px;
     color: #591717;
     text-shadow: 0px 1px 0px rgba(255, 255, 255, 0.35);
-    z-index: 1;
+    
   }
   .celsfar label:before {
     content: '';
@@ -390,7 +396,7 @@ input:placeholder-shown{
 /* MAP */
 #map{
     width:100%;
-    height: 330px;
+    height: 340px;
     border-radius: 8px;
     margin:0 auto;
 }
@@ -431,16 +437,32 @@ input:placeholder-shown{
     
 }
 
+#results{
+    width:auto;
+    margin-left:12%;
    
-   
+    margin-right: 8%;
+}
 
 }
 
+@media screen and (min-width:540px) and (max-width:540px){
+    input[type=text]{
+        width:413px;
+    } 
+}
+
+@media screen and (min-width:541px)and (max-width:979px){
+    input[type=text]{
+        width: 580px;
+    } 
+}
 
 
+@media only  screen and  (max-width:980px){
+    
 
-@media only  screen and (max-width:980px){
-       
+
     .columns .column {
         margin-bottom: 5px;
         flex-basis: 40%;
@@ -457,7 +479,12 @@ input:placeholder-shown{
     margin-left:21.5%;
 }
 
-  
+#results{
+    width: auto;
+    margin-left: 10%;
+    margin-right: 8%;
+}
+
 }
 
   
