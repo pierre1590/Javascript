@@ -6,8 +6,7 @@
 
  
 body{
-    background:url('/public/background/weather.jpg');
-    background-size: cover;
+   
     
     height:100%;
     background-repeat: no-repeat;
@@ -45,7 +44,7 @@ body{
    
     border: 1px dotted #007;
     border-radius:10px;
-    opacity:0.85;
+    opacity:0.7;
     background-color: aliceblue;
 }
 
@@ -163,7 +162,7 @@ input:placeholder-shown{
     color:#1af;
 }
 
-#btn_search{
+#btn_show{
     width:150px;
     height: 57px;
     margin:8px;
@@ -182,16 +181,16 @@ input:placeholder-shown{
     color: whitesmoke;
     background-color: lightskyblue;
     font-family: 'Courgette', cursive;
-    z-index: 1;
+    
     
     
 }
 
-#btn_search:focus{
+#btn_show:focus{
     outline:none;
 }
 
-#btn_search:active{
+#btn_show:active{
     box-shadow: 0 3px 0 #00f;
     top: 3px;
 }
@@ -222,7 +221,8 @@ input:placeholder-shown{
     border-top-left-radius:8px;
     border-top-right-radius: 8px;
     margin-left: 30%;
-    
+    box-shadow: 3px #00f;
+    display: hidden;
 }
 
 #results li {
@@ -486,11 +486,3 @@ input:placeholder-shown{
 }
 
 }
-
-  
-    
-  
-    
-    
-
-

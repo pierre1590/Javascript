@@ -49,6 +49,7 @@ function setPosition(position){
     getWeather(latitude, longitude);
     showAir(latitude, longitude);
     cb(latitude, longitude);
+    changeBackground(weatherinfo,t);
 }
     
 
@@ -92,7 +93,7 @@ function getWeather(latitude, longitude){
            
         })
         .then(function(){
-            let icon = weather.iconId;
+            let weatherinfo = weather.description;
             let tz = (weather.timezone)/3600;
             let snrise = weather.sunrise;
             let snset = weather.sunset; 
@@ -104,6 +105,7 @@ function getWeather(latitude, longitude){
             timeCity.innerHTML = t; 
             date.textContent = dt;
             showAir(latitude, longitude);
+            changeBackground(weatherinfo, t);
             displayWeather();
             cb();
             
@@ -220,7 +222,7 @@ cF.addEventListener("click", function(){
 
 // GET WEATHER FROM SEARCH BAR
 
- btn_search.onclick = function() {
+ btn_show.onclick = function() {
      
     let city = document.getElementById('city').value;
    
@@ -256,10 +258,10 @@ cF.addEventListener("click", function(){
         weather.visibility = (data.visibility/1000).toFixed(01);
     })
     .then(function(){ 
-        
+        let weatherinfo = weather.description;
         let latitude = `${weather.latitude}`;
         let longitude = `${weather.longitude}`;
-        let icon = weather.iconId;
+        
         let tz = (weather.timezone)/3600;
         let snrise = weather.sunrise;
         let snset = weather.sunset; 
@@ -271,6 +273,7 @@ cF.addEventListener("click", function(){
         timeCity.innerHTML = t; 
         date.textContent = dt;
         showAir(latitude, longitude);
+        changeBackground(weatherinfo, t);
         displayWeather();
         showCity();
        
@@ -316,7 +319,7 @@ function getLocation() {
        getWeather(latitude, longitude);
        cb(latitude, longitude,display_name);
        showAir(latitude, longitude);
-       
+       changeBackground(weatherinfo,t);
        
     });
  } else {
@@ -603,5 +606,80 @@ function convertLongDecToDMS(myLng) {
 
     }
     
-
-
+function changeBackground(weatherinfo, t){
+   if (weatherinfo == 'cielo sereno' && t <= '04:00'){
+       document.body.style.backgroundImage = 'url(/public/background/sun.jpg)';
+       document.body.style.backgroundSize = 'cover';
+       document.body.style.backgroundRepeat = 'no-repeat';
+   }else if 
+       (weatherinfo == 'cielo sereno' && t > '04:01 ' ){
+        document.body.style.backgroundImage = 'url(/public/background/moon.jpg)';
+        document.body.style.backgroundSize = 'cover';
+        document.body.style.backgroundRepeat = 'no-repeat';
+    }else if
+        ( weatherinfo == 'nebbia'){
+        document.body.style.backgroundImage = 'url(/public/background/fog.jpg)';
+        document.body.style.backgroundSize = 'cover';
+        document.body.style.backgroundRepeat = 'no-repeat';
+    }else if 
+       ( weatherinfo ==  'foschia'){
+        document.body.style.backgroundImage = 'url(/public/background/fog.jpg)';
+        document.body.style.backgroundSize = 'cover';
+        document.body.style.backgroundRepeat = 'no-repeat';
+    }else if 
+       (weatherinfo == 'poche nuvole'){
+       document.body.style.backgroundImage = 'url(/public/background/few_clouds.jpg';
+       document.body.style.backgroundSize = 'cover';
+       document.body.style.backgroundRepeat = 'no-repeat';
+    }else if
+       (weatherinfo == 'nubi sparse'){
+        document.body.style.backgroundImage = 'url(/public/background/few_clouds.jpg';
+        document.body.style.backgroundSize = 'cover';
+        document.body.style.backgroundRepeat = 'no-repeat';
+    }else if
+        (weatherinfo == 'cielo coperto'){
+        document.body.style.backgroundImage = 'url(/public/background/clouds.jpg)';
+        document.body.style.backgroundSize = 'cover';
+        document.body.style.backgroundRepeat = 'no-repeat';
+    }else if
+        (weatherinfo == 'pioggia'){
+        document.body.style.backgroundImage = 'url(/public/background/rain.jpg)';
+        document.body.style.backgroundSize = 'cover';
+        document.body.style.backgroundRepeat = 'no-repeat';
+    }else if     
+        (weatherinfo == 'forte pioggia'){
+        document.body.style.backgroundImage = 'url(/public/background/rain.jpg)';
+        document.body.style.backgroundSize = 'cover';
+        document.body.style.backgroundRepeat = 'no-repeat';
+    }else if 
+        (weatherinfo == 'acquazzone'){
+        document.body.style.backgroundImage = 'url(/public/background/rain.jpg)';
+        document.body.style.backgroundSize = 'cover';
+        document.body.style.backgroundRepeat = 'no-repeat';
+    }else if
+        (weatherinfo == 'pioggia leggera'){
+        document.body.style.backgroundImage = 'url(/public/background/light_rain.jpg)';
+        document.body.style.backgroundSize = 'cover';
+        document.body.style.backgroundRepeat = 'no-repeat';
+    }else if
+        (weatherinfo ==  'pioggia moderata'){
+        document.body.style.backgroundImage = 'url(/public/background/light_rain.jpg)';
+        document.body.style.backgroundSize = 'cover';
+        document.body.style.backgroundRepeat = 'no-repeat';
+    }else if        
+        (weatherinfo == 'temporale'){
+        document.body.style.backgroundImage = 'url(/public/background/storm.jpg)';
+        document.body.style.backgroundSize = 'cover';
+        document.body.style.backgroundRepeat = 'no-repeat';
+    }else if
+        (weatherinfo == 'neve'){
+        document.body.style.backgroundImage = 'url(/public/background/snow.jpg)';
+        document.body.style.backgroundSize = 'cover';
+        document.body.style.backgroundRepeat = 'no-repeat';
+    }else{
+            document.body.style.background = 'url(/public/background/weather.jpg)';
+            document.body.style.backgroundSize = 'cover';
+            document.body.style.backgroundRepeat = 'no-repeat';
+        }
+   
+}
